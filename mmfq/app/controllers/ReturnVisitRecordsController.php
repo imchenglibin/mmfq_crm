@@ -99,7 +99,7 @@ class ReturnVisitRecordsController extends ControllerBase
         if ($customer->user_id != $logInUser->id) {
           return $this->returnJson(null, $this->mmfqError->forbidded);
         } else {
-          if ($record->remove()) {
+          if ($record->delete()) {
             return $this->returnJson(null);
           } else {
             return $this->returnJson(null, $this->mmfqError->serverInternalError);

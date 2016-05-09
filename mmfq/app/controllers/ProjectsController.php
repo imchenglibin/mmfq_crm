@@ -195,7 +195,7 @@ class ProjectsController extends ControllerBase
         return $this->returnJson(null, $this->mmfqError->forbidded);
       }
 
-      if ($project->remove()) {
+      if ($project->delete()) {
         return $this->returnJson(null);
       } else {
         return $this->returnJson(null, $this->mmfqError->serverInternalError);

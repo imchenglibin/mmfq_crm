@@ -13,6 +13,7 @@ class CustomersController extends ControllerBase
     $telephone = $this->request->getPost('telephone');
     $school = $this->request->getPost('school');
     $age = $this->request->getPost('age');
+    $push = $this->request->getPost('push');
 
     $user = $this->getLogInUser();
     $user_id = $user->id;
@@ -34,11 +35,15 @@ class CustomersController extends ControllerBase
       return $this->returnJson(null, $this->mmfqError->invalidParams, '(school)');
     }
 
+    if (strlen($push) == 0) {
+      return $this->returnJson(null, $this->mmfqError->invalidParams, '(push)');
+    }
+
     if (!UsersValidator::validteTelephone($telephone)) {
       return $this->returnJson(null, $this->mmfqError->invalidParams, '(telephone)');
     }
 
-    $customer = Customers::addCustomer($user_id, $user_real_name, $name, $sign_date, $telephone, $school, $age);
+    $customer = Customers::addCustomer($user_id, $user_real_name, $name, $sign_date, $telephone, $school, $age, $push);
     if($customer) {
       return $this->returnJson($customer);
     } else {
@@ -152,6 +157,7 @@ class CustomersController extends ControllerBase
     $telephone = $this->request->getPost('telephone');
     $school = $this->request->getPost('school');
     $age = $this->request->getPost('age');
+    $push = $this->request->getPost('push');
 
     $customer = Customers::findFirstById($customerId);
     $logInUser = $this->getLogInUser();
@@ -177,6 +183,10 @@ class CustomersController extends ControllerBase
 
       if (isset($age)) {
         $customer->age = $age;
+      }
+
+      if (isset($push)) {
+        $customer->push = $push;
       }
 
       if ($customer->save()) {
@@ -218,17 +228,17 @@ class CustomersController extends ControllerBase
       $customer = Customers::findFirstById($customerId);
       if ($customer) {
         $logInUser = $this->getLogInUser();
-        if ($customer->user_id != $loginUser->id) {
+        if ($customer->user_id != $logInUser->id) {
           return $this->returnJson(null, $this->mmfqError->forbidded);
         } else {
-          if ($customer->remove()) {
+          if ($customer->delete()) {
             $projects = Projects::find(array('customer_id = :customerId:', 'bind' => array('customerId' => $customerId)));
             foreach ($projects as $project) {
-              $project->remove();
+              $project->delete();
             }
             $returnVisitRecords = ReturnVisitRecords::find(array('customer_id = :customerId:', 'bind' => array('customerId' => $customerId)));
             foreach ($returnVisitRecords as $returnVisitRecord) {
-              $returnVisitRecord->remove();
+              $returnVisitRecord->delete();
             }
             return $this->returnJson(null);
           } else {

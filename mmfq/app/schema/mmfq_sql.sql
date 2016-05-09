@@ -1,4 +1,3 @@
-
 create database if not exists mmfq_admin_yimei DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 use mmfq_admin_yimei;
@@ -20,7 +19,8 @@ create table if not exists `customers`(
   `telephone` varchar(20) not null,
   `school` varchar(255) not null,
   `age` int not null,
-  `star` tinyint(1) not null
+  `star` tinyint(1) not null,
+  `push` varchar(30) not null
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table if not exists `projects`(
@@ -55,3 +55,5 @@ create table if not exists `project_kinds`(
   `id` int primary key auto_increment,
   `label` varchar(255) not null
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+insert into `users` (`user_name`, `password`, `real_name`, `role`) values('admin', md5('admin_mmfq_2016'), 'Administrator', 'admin');

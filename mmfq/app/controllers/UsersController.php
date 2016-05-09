@@ -90,24 +90,17 @@ class UsersController extends ControllerBase
    * @Route("/update_user_info", methods={"POST"})
    */
    public function updateUserInfoAction() {
-     $userId = $this->request->getPost('user_id');
-     $user = Users::findFirstById($userId);
-     if ($user) {
-       $password = $this->request->getPost('password');
-       if (strlen($assword) > 0) {
-         if (!UsersValidator::validtePassword($password)) {
-           return $this->returnJson(null, $this->mmfqError->invalidPassword);
-         } else {
-           $user->password = md5($password);
-         }
-       }
-       if ($user->save()) {
-         return $this->returnJson(null);
-       } else {
-         return $this->returnJson(null, $this->mmfqError->serverInternalError);
-       }
+     $user = $this->getLogInUser();
+     $password = $this->request->getPost('password');
+     if (!UsersValidator::validtePassword($password)) {
+       return $this->returnJson(null, $this->mmfqError->invalidPassword);
      } else {
-       return $this->returnJson(null, $this->mmfqError->userNotExists);
+       $user->password = md5($password);
+     }
+     if ($user->save()) {
+       return $this->returnJson($user);
+     } else {
+       return $this->returnJson(null, $this->mmfqError->serverInternalError);
      }
    }
 
@@ -163,13 +156,18 @@ class UsersController extends ControllerBase
        $userId = $this->request->getPost('user_id');
        $user = Users::findFirstById($userId);
        if ($user) {
+
+         if ($logInUser->id == $userId) {
+           return $this->returnJson(null, $this->mmfqError->deleteSelf);
+         }
+
          $this->modelsManager->executeQuery("UPDATE Customers SET Customers.user_id=:newUserId: WHERE Customers.user_id=:oldUserId:",
-          array(
+          array (
             'newUserId' => $logInUser->id,
             'oldUserId' => $userId
           )
          );
-         if($user->remove()) {
+         if($user->delete()) {
            return $this->returnJson(null);
          } else {
            return $this->returnJson(null, $this->mmfqError->serverInternalError);

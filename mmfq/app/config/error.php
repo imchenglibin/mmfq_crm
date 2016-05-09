@@ -16,6 +16,7 @@ return array(
   'projectKindExists' => array ('code' => 12, 'message' => '标签已经存在'),
   'projectKindNotExists' => array ('code' => 13, 'message' => '标签不存在'),
   'projectNotExists' => array ('code' => 13, 'message' => '项目不存在'),
-  'notFound' => array ('code' => 14, 'message' => '请求不纯在')
+  'notFound' => array ('code' => 14, 'message' => '请求不纯在'),
+  'deleteSelf' => array ('code' => 15, 'message' => '不能删除自己')
 )
 ?>

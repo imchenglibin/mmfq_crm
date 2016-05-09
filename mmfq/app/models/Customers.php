@@ -14,12 +14,13 @@ class Customers extends Model
   public $age;
   public $star;
   public $user_real_name;
+  public $push;
 
   public function getSource() {
     return "customers";
   }
 
-  public static function addCustomer($user_id, $user_real_name, $name, $sign_date, $telephone, $school, $age) {
+  public static function addCustomer($user_id, $user_real_name, $name, $sign_date, $telephone, $school, $age, $push) {
     $customer = new Customers();
     $customer->user_real_name = $user_real_name;
     $customer->user_id = $user_id;
@@ -29,6 +30,7 @@ class Customers extends Model
     $customer->school = $school;
     $customer->age = $age;
     $customer->star = 0;
+    $customer->push = $push;
     if ($customer->save()) {
       return $customer;
     } else {
